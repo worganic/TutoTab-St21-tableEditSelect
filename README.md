@@ -1,4 +1,4 @@
-# WorganicTabV1 / v21 : Table/Button/Edit/Selected
+# WorganicTabV1 / v22 : Table/Add
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.1.
 
@@ -20,29 +20,45 @@ Run `ng generate component component-name` to generate a new component. You can 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
 ## Get clone 
-> https://github.com/worganic/TutoTab-St21-tableEditSelect.git
+> https://github.com/worganic/TutoTab-St22-tableAdd.git
 > npm install
-> cd .\worganic-tab-v19\
+> cd .\worganic-tab-v22\
 > ng serve
 
 ## Project :
-v21 - Tableau -> Button -> Edit -> selected
+v22 - Tableau -> Add
 
-    - Ajout du type editType :
+    - On rajoute l'option add :
         \src\app\component\users\users.component.ts
-            >> editType: 'select'
-    - Suppression de l'option 'all' dans la ligne :
+            >> options: any = {...
+                'addData': true,// ...
+    - On récupère l'option dans table :
         \src\app\shared\component\worg-table\worg-table.component.ts
-            >> listData.push("All");// getSelectList(): Observable<any> {
-    - Suppression de 'all' dans les option de colonne :
+            >> addData: boolean = false;
+            >> this.addData = option['options']['addData'];
+    - On rajoute la ligne de add :
+        \src\app\shared\component\worg-table\worg-table.component.html
+            >> <!-- row addData -->...
+    - On ajoute le bouton addData dans la ligne de titre :
+        \src\app\shared\component\worg-table\worg-table.component.html
+            >> <!-- row title -->...
+                <div *ngIf="column.column == 'delete' && optionAdd && !add">...</div>
+    - 
+        \src\app\shared\component\worg-table\worg-table.component.ts
+            >> addData: boolean = false;
+    - On met à jour la fct buttonFct avec addValid :
+        \src\app\shared\component\worg-table\worg-table.component.ts
+            >> if(action == 'editValid' || action == 'addValid'){
+    - On ajoute l'option addValid à users :
         \src\app\component\users\users.component.ts
-            >> filterSelectData: ['Homme','Femme'], 
-    - Ajout dans la vue de All pour les filtres :
-        \src\app\shared\component\worg-table\worg-table.component.html
-            >> <option value="All">All</option>
-    - Mise à jour de la zone Edit / select :
-        \src\app\shared\component\worg-table\worg-table.component.html
-            >> <div *ngIf="column.editType == 'select'" >...
+            >> if(data['action']== "addValid"){...
+    - On ajoute le service :
+        \src\app\shared\services\users.service.ts
+            >> addUser(element: any) {...
+    - On supprime l'element qui ne doit pas être enregistré (isExpand) :
+        \src\app\shared\component\worg-table\worg-table.component.ts
+            >> delete element.isExpand;
+
 
 ## Problème à résoudre :
     
@@ -52,12 +68,11 @@ v21 - Tableau -> Button -> Edit -> selected
 ## Update
 
 ## Historique :
-Avant -> v20 - Tableau -> Button -> edit
-Après -> v22 - Tableau -> Add
-
+Avant -> v21 - Tableau -> Button -> Edit -> selected
+Après -> v23 - Tableau -> multiple
 ## Ressource :
-    - selected :
-    https://www.delftstack.com/howto/angular/angular-select-default-value/
+    - Suppresion element d'un object :
+    https://www.journaldunet.fr/web-tech/developpement/1441137-angular-comment-retirer-un-item-d-un-tableau-array-stocke/#:~:text=Pour%20supprimer%20un%20%C3%A9l%C3%A9ment%20d'un%20tableau%2C%20vous%20devez%20faire,que%20l'on%20souhaite%20supprimer.&text=On%20peut%20%C3%A9galement%20pr%C3%A9ciser%20en,que%20l'on%20souhaite%20supprimer.
 
 ## Abouts
 created by Johann Loreau

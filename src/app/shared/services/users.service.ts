@@ -47,8 +47,9 @@ export class UsersService {
  * editUser
  * @param element 
  */
-  editUser(element: any) {
+  editUser(element: Users) {
     let endPoints = element.id;
+    console.log("UsersService | editUser / element : ", element);
     const url = this.url + "/" + endPoints;
     const response = this._http.put(url, element).subscribe(data => {
       console.log(data);
@@ -59,9 +60,9 @@ export class UsersService {
   * addUser
   * @param element 
   */
-  addUser(element: any) {
+  addUser(element: Users) {
     let endPoints = element.id;
-    const url = this.url + "/" + endPoints;
+    const url = this.url;
     const response = this._http.post(url, element).subscribe(data => {
       console.log(data);
     });

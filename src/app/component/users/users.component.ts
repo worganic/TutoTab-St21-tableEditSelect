@@ -36,6 +36,7 @@ export class UsersComponent implements OnInit {
     'infosNbElementText': "Nombre d'élément total",// Affichage d'infos (nombre d'élément).
     'expandabled': true,// Expandable actif.
     'expandableCol': true,// false : exapandable si click sur la ligne // true : uniquement sur certaine colonne :  expandable: true
+    'addData': true,// 
   };
 
 
@@ -123,11 +124,17 @@ export class UsersComponent implements OnInit {
    */
   action(data: any){
     console.log("UsersComponent / action / data :", data);
+    // delete
     if(data['action']== "delete"){
       this._usersService.delUser(data['element']);
     }
+    // editValid
     if(data['action']== "editValid"){
       this._usersService.editUser(data['element']);
+    }
+    // addValid
+    if(data['action']== "addValid"){
+      this._usersService.addUser(data['element']);
     }
   }
 

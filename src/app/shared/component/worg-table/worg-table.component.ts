@@ -87,7 +87,9 @@ export class WorgTableComponent implements OnInit {
   infosNbElement: boolean = false;
   infosNbElementText: string = "Nombre d'élément total";
   expandabled: boolean = false;
-
+  optionAdd: boolean = false;
+  addData: boolean = false;
+  
   service: any;// Service récupéré.
   Listecolumns!: Listecolumn[]; // Initialisation de la liste des filtres :
 
@@ -136,13 +138,15 @@ export class WorgTableComponent implements OnInit {
     this.infosNbElement = option['options']['infosNbElement'];
     this.infosNbElementText = option['options']['infosNbElementText'];
     this.expandabled = option['options']['expandabled'];
-    console.log('WorgTableComponent | ngOnInit / this.expandabled :', this.expandabled);
+    this.optionAdd = option['options']['addData'];
 
     this.service = option['service'];// Service utilisé.
     this.Listecolumns = option['listeColumns'];// Liste des colonnes.
     // Récupération de l'option time si celle ci à été modifié.
     if (this.tableTimerTemps && this.timeLeft != this.tableTimerTemps) this.timeLeft = this.tableTimerTemps;
 
+
+    
     // Mise en place des filtres :
     const group: any = {};
     Object.entries(this.Listecolumns).forEach(([key, value], index) => {
@@ -190,7 +194,7 @@ export class WorgTableComponent implements OnInit {
    * 
    */
   majDonnees() {
-    console.log("> WorgTableComponent | majDonnees");
+    console.log("WorgTableComponent | majDonnees");
     this.time = 0;
   }
 
@@ -402,25 +406,35 @@ export class WorgTableComponent implements OnInit {
       element: element, 
       action: action
     };
-    console.log('WorgTableComponent | buttonFct / data :', data);  
+
+    //
     if(action == 'delete'){
-   
+      console.log('WorgTableComponent | buttonFct / delete / data : ', data); 
       this.action.emit(data);
       this.majDonnees();
     }
+
+    // edit
     if(action == 'edit'){
       if(this.editAff != undefined){
         this.editAff = undefined;
       }else{
         this.editAff = element.id;
+        this.expandabled = false;
       }
-      console.log('WorgTableComponent | buttonFct / edit / element.id :', element.id);  
     }
+
+    // cancel
     if(action == 'cancel'){
       this.editAff = undefined;
+      this.expandabled = true;
     }
-    if(action == 'editValid'){
-      console.log('WorgTableComponent | buttonFct / valid / element : ', element); 
+
+    // editValid || addValid
+    if(action == 'editValid' || action == 'addValid'){
+      if(element == null){
+        element = {};
+      }
       // On parcour les colonnes (options) :
       Object.entries(this.Listecolumns).forEach(([key, value], index) => {
         // On récupère que les type edit :
@@ -429,18 +443,26 @@ export class WorgTableComponent implements OnInit {
           element[value.column] = res;
         }
       });
+      // On supprime l'element qui ne doit pas être enregistré :
+      delete element.isExpand;
       // On envois les nouvelles données aux services :
       var data: ModelExport = 
       { 
         element: element, 
         action: action
       };
+      console.log('WorgTableComponent | buttonFct / valid / element : ', element); 
       this.action.emit(data);
       // On reviens à une ligne d'affichage normal (ss bouton).
       this.editAff = undefined;
       // On met à jour les données pour l'affichage.
       this.majDonnees();
+      if(action == 'addValid'){
+        this.addData = false;
+      }
+      this.expandabled = true;
     }
+
 
   }
 
@@ -455,6 +477,8 @@ export class WorgTableComponent implements OnInit {
    */
   expandableAction(element: any, expandable: boolean = false){
     if(this.expandabled){
+      console.log("WorgTableComponent | expandableAction / element : ", element);
+      console.log("WorgTableComponent | expandableAction / expandable : ", expandable);
       const expandableCol = this.tableOption[0]['options']['expandableCol'];
       // Vérification si le expandable est lié à la colonne :
       if(expandable || expandableCol == false){
